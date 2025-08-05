@@ -3,6 +3,10 @@ import time
 import os
 from datetime import datetime
 from switchbot_api import SwitchBotAPI
+from dotenv import load_dotenv
+
+# .envファイルを読み込み
+load_dotenv()
 
 # Configure page
 st.set_page_config(
