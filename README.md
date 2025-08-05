@@ -49,7 +49,7 @@ python run_app.py
 ### 方法2: 直接起動
 
 ```bash
-streamlit run app.py
+streamlit run app.py --server.port 8501
 ```
 
 ## 📁 ファイル構成

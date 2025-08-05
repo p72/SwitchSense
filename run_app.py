@@ -37,7 +37,7 @@ def main():
     try:
         print("🚀 Streamlitアプリを起動中...")
         subprocess.run([
-            sys.executable, "-m", "streamlit", "run", "app.py"
+            sys.executable, "-m", "streamlit", "run", "app.py", "--server.port", "8501"
         ], check=True)
     except KeyboardInterrupt:
         print("\n👋 アプリを終了しました〜！")
