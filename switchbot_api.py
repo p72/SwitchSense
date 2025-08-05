@@ -118,6 +118,222 @@ class SwitchBotAPI:
         except Exception as e:
             raise Exception(f"Failed to get device status for {device_id}: {str(e)}")
     
+    # ===== デバイス操作機能 =====
+    
+    def turn_on_device(self, device_id: str) -> bool:
+        """
+        Turn on a device
+        
+        Args:
+            device_id: Device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "turnOn", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to turn on device {device_id}: {str(e)}")
+    
+    def turn_off_device(self, device_id: str) -> bool:
+        """
+        Turn off a device
+        
+        Args:
+            device_id: Device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "turnOff", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to turn off device {device_id}: {str(e)}")
+    
+    # ===== テレビ操作機能 =====
+    
+    def tv_power(self, device_id: str) -> bool:
+        """
+        Toggle TV power
+        
+        Args:
+            device_id: TV device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "turnOn", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to toggle TV power for {device_id}: {str(e)}")
+    
+    def tv_volume_up(self, device_id: str) -> bool:
+        """
+        Increase TV volume
+        
+        Args:
+            device_id: TV device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "volumeUp", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to increase TV volume for {device_id}: {str(e)}")
+    
+    def tv_volume_down(self, device_id: str) -> bool:
+        """
+        Decrease TV volume
+        
+        Args:
+            device_id: TV device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "volumeDown", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to decrease TV volume for {device_id}: {str(e)}")
+    
+    def tv_channel_up(self, device_id: str) -> bool:
+        """
+        Increase TV channel
+        
+        Args:
+            device_id: TV device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "channelUp", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to increase TV channel for {device_id}: {str(e)}")
+    
+    def tv_channel_down(self, device_id: str) -> bool:
+        """
+        Decrease TV channel
+        
+        Args:
+            device_id: TV device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "channelDown", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to decrease TV channel for {device_id}: {str(e)}")
+    
+    def tv_set_channel(self, device_id: str, channel: int) -> bool:
+        """
+        Set TV to specific channel
+        
+        Args:
+            device_id: TV device ID
+            channel: Channel number
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "setChannel", "parameter": str(channel), "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to set TV channel for {device_id}: {str(e)}")
+    
+    def tv_set_volume(self, device_id: str, volume: int) -> bool:
+        """
+        Set TV volume to specific level
+        
+        Args:
+            device_id: TV device ID
+            volume: Volume level (0-100)
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "setVolume", "parameter": str(volume), "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to set TV volume for {device_id}: {str(e)}")
+    
+    # ===== エアコン操作機能 =====
+    
+    def ac_power(self, device_id: str) -> bool:
+        """
+        Toggle AC power
+        
+        Args:
+            device_id: AC device ID
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "turnOn", "parameter": "default", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to toggle AC power for {device_id}: {str(e)}")
+    
+    def ac_set_temperature(self, device_id: str, temperature: int) -> bool:
+        """
+        Set AC temperature
+        
+        Args:
+            device_id: AC device ID
+            temperature: Temperature in Celsius
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "setAll", "parameter": f"25,{temperature},auto", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to set AC temperature for {device_id}: {str(e)}")
+    
+    def ac_set_mode(self, device_id: str, mode: str) -> bool:
+        """
+        Set AC mode (cool, heat, auto, fan, dry)
+        
+        Args:
+            device_id: AC device ID
+            mode: Mode (cool, heat, auto, fan, dry)
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": "setAll", "parameter": f"25,25,{mode}", "commandType": "command"}
+            self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to set AC mode for {device_id}: {str(e)}")
+    
+    # ===== シーン機能 =====
+    
     def get_scenes(self) -> List[Dict]:
         """
         Get list of all scenes
@@ -148,3 +364,22 @@ class SwitchBotAPI:
             return True
         except Exception as e:
             raise Exception(f"Failed to execute scene {scene_id}: {str(e)}")
+    
+    # ===== デバイス情報取得 =====
+    
+    def get_device_types(self) -> Dict[str, List[str]]:
+        """
+        Get supported device types and their commands
+        
+        Returns:
+            Dictionary of device types and their supported commands
+        """
+        return {
+            "TV": ["power", "volume_up", "volume_down", "channel_up", "channel_down", "set_channel", "set_volume"],
+            "AC": ["power", "set_temperature", "set_mode"],
+            "Light": ["turn_on", "turn_off"],
+            "Switch": ["turn_on", "turn_off"],
+            "Meter": ["get_status"],
+            "MeterPlus": ["get_status"],
+            "OutdoorMeter": ["get_status"]
+        }
