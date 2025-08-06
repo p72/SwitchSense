@@ -128,16 +128,32 @@ def display_ac_controls(device_data, api):
         st.caption(f"**Remote Type**: {remote_type}")
     
     # Power control
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("🔌 Power", key=f"ac_power_{device_id}"):
+        if st.button("🔌 Power On", key=f"ac_power_on_{device_id}"):
             try:
-                api.ac_power(device_id)
-                st.success("AC power command sent!")
+                if 'remoteType' in device_data:
+                    # 仮想IRリモコンの場合: setAllコマンドで電源ON
+                    api.send_infrared_command(device_id, "setAll", "26,1,3,on")
+                else:
+                    api.ac_power(device_id)
+                st.success("AC power ON command sent!")
             except Exception as e:
-                st.error(f"Failed to send AC power command: {str(e)}")
+                st.error(f"Failed to send AC power ON command: {str(e)}")
     
     with col2:
+        if st.button("🔌 Power Off", key=f"ac_power_off_{device_id}"):
+            try:
+                if 'remoteType' in device_data:
+                    # 仮想IRリモコンの場合: setAllコマンドで電源OFF
+                    api.send_infrared_command(device_id, "setAll", "26,1,3,off")
+                else:
+                    api.ac_power(device_id)  # 物理デバイスの場合は切り替え
+                st.success("AC power OFF command sent!")
+            except Exception as e:
+                st.error(f"Failed to send AC power OFF command: {str(e)}")
+    
+    with col3:
         if st.button("🔄 Refresh Status", key=f"ac_refresh_{device_id}"):
             st.rerun()
     
@@ -149,7 +165,11 @@ def display_ac_controls(device_data, api):
         temperature = st.slider("Set Temperature", 16, 30, 25, key=f"temp_{device_id}")
         if st.button("Set Temperature", key=f"settemp_{device_id}"):
             try:
-                api.ac_set_temperature(device_id, temperature)
+                if 'remoteType' in device_data:
+                    # 仮想IRリモコンの場合: setAllコマンドで温度設定
+                    api.send_infrared_command(device_id, "setAll", f"{temperature},1,3,on")
+                else:
+                    api.ac_set_temperature(device_id, temperature)
                 st.success(f"Temperature set to {temperature}°C!")
             except Exception as e:
                 st.error(f"Failed to set temperature: {str(e)}")
@@ -158,7 +178,13 @@ def display_ac_controls(device_data, api):
         mode = st.selectbox("Set Mode", ["cool", "heat", "auto", "fan", "dry"], key=f"mode_{device_id}")
         if st.button("Set Mode", key=f"setmode_{device_id}"):
             try:
-                api.ac_set_mode(device_id, mode)
+                if 'remoteType' in device_data:
+                    # 仮想IRリモコンの場合: setAllコマンドでモード設定
+                    mode_map = {"auto": 1, "cool": 2, "dry": 3, "fan": 4, "heat": 5}
+                    mode_value = mode_map.get(mode, 1)
+                    api.send_infrared_command(device_id, "setAll", f"26,{mode_value},3,on")
+                else:
+                    api.ac_set_mode(device_id, mode)
                 st.success(f"Mode set to {mode}!")
             except Exception as e:
                 st.error(f"Failed to set mode: {str(e)}")
@@ -287,6 +313,19 @@ def display_thermometer_controls(device_data, api):
     
     st.divider()
 
+def display_hub_info(device_data):
+    """Display Hub device information (no controls)"""
+    device_name = device_data.get('deviceName', 'Unknown Hub')
+    device_id = device_data.get('deviceId', 'N/A')
+    device_type = device_data.get('deviceType', 'Unknown Type')
+    
+    # デバイス情報を表示（操作ボタンなし）
+    st.subheader(f"🔧 {device_name}")
+    st.caption(f"**ID**: {device_id} | **Type**: {device_type}")
+    st.info("ℹ️ このデバイスは操作対象外です（Hub Mini）")
+    
+    st.divider()
+
 def main():
     st.title("📺 SwitchBot Device Controller")
     st.markdown("Control your SwitchBot devices including TVs, ACs, lights, and thermometers")
@@ -335,6 +374,7 @@ def main():
         ac_devices = []
         light_devices = []
         thermometer_devices = []
+        hub_devices = []
         other_devices = []
         
         # Physical devices
@@ -348,6 +388,9 @@ def main():
                 light_devices.append(device)
             elif 'Meter' in device_type:  # Meter, MeterPlus, Outdoor Meter など
                 thermometer_devices.append(device)
+            elif 'Hub Mini' in device_type:
+                # Hub Miniは情報表示のみ
+                hub_devices.append(device)
             else:
                 other_devices.append(device)
         
@@ -391,6 +434,12 @@ def main():
             for device in light_devices:
                 display_light_controls(device, api)
         
+        # Display Hub devices (info only)
+        if hub_devices:
+            st.header("🔧 Hub Devices")
+            for device in hub_devices:
+                display_hub_info(device)
+        
         # Display other devices
         if other_devices:
             st.header("🔧 Other Devices")
@@ -427,6 +476,7 @@ def main():
         st.sidebar.write(f"📺 TVs: {len(tv_devices)}")
         st.sidebar.write(f"❄️ ACs: {len(ac_devices)}")
         st.sidebar.write(f"💡 Lights: {len(light_devices)}")
+        st.sidebar.write(f"🔧 Hubs: {len(hub_devices)}")
         st.sidebar.write(f"🔧 Others: {len(other_devices)}")
         st.sidebar.write(f"📱 Total: {len(devices)}")
     
