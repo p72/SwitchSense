@@ -26,7 +26,11 @@ def display_tv_controls(device_data, api):
     with col1:
         if st.button("🔌 Power", key=f"power_{device_id}"):
             try:
-                api.tv_power(device_id)
+                # Check if it's an infrared remote
+                if device_data.get('remoteType'):
+                    api.send_infrared_command(device_id, "turnOn")
+                else:
+                    api.tv_power(device_id)
                 st.success("Power command sent!")
             except Exception as e:
                 st.error(f"Failed to send power command: {str(e)}")
@@ -42,7 +46,10 @@ def display_tv_controls(device_data, api):
     with vol_col1:
         if st.button("🔊 Volume Up", key=f"volup_{device_id}"):
             try:
-                api.tv_volume_up(device_id)
+                if device_data.get('remoteType'):
+                    api.send_infrared_command(device_id, "volumeUp")
+                else:
+                    api.tv_volume_up(device_id)
                 st.success("Volume increased!")
             except Exception as e:
                 st.error(f"Failed to increase volume: {str(e)}")
@@ -50,7 +57,10 @@ def display_tv_controls(device_data, api):
     with vol_col2:
         if st.button("🔉 Volume Down", key=f"voldown_{device_id}"):
             try:
-                api.tv_volume_down(device_id)
+                if device_data.get('remoteType'):
+                    api.send_infrared_command(device_id, "volumeDown")
+                else:
+                    api.tv_volume_down(device_id)
                 st.success("Volume decreased!")
             except Exception as e:
                 st.error(f"Failed to decrease volume: {str(e)}")
@@ -59,7 +69,10 @@ def display_tv_controls(device_data, api):
         volume = st.slider("Set Volume", 0, 100, 50, key=f"volume_{device_id}")
         if st.button("Set Volume", key=f"setvol_{device_id}"):
             try:
-                api.tv_set_volume(device_id, volume)
+                if device_data.get('remoteType'):
+                    api.send_infrared_command(device_id, "setVolume", str(volume))
+                else:
+                    api.tv_set_volume(device_id, volume)
                 st.success(f"Volume set to {volume}!")
             except Exception as e:
                 st.error(f"Failed to set volume: {str(e)}")
@@ -220,6 +233,7 @@ def main():
         light_devices = []
         other_devices = []
         
+        # Physical devices
         for device in devices:
             device_type = device.get('deviceType', '')
             if 'TV' in device_type or 'Television' in device_type:
@@ -230,6 +244,22 @@ def main():
                 light_devices.append(device)
             else:
                 other_devices.append(device)
+        
+        # Infrared remote devices
+        try:
+            infrared_remotes = api.get_infrared_remotes()
+            for remote in infrared_remotes:
+                remote_type = remote.get('remoteType', '')
+                if remote_type == 'TV':
+                    tv_devices.append(remote)
+                elif remote_type == 'Air Conditioner':
+                    ac_devices.append(remote)
+                elif remote_type == 'Light':
+                    light_devices.append(remote)
+                else:
+                    other_devices.append(remote)
+        except Exception as e:
+            st.warning(f"仮想IRリモコンの取得に失敗しました: {str(e)}")
         
         # Display TV devices
         if tv_devices:

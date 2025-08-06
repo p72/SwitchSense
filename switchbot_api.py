@@ -383,3 +383,53 @@ class SwitchBotAPI:
             "MeterPlus": ["get_status"],
             "OutdoorMeter": ["get_status"]
         }
+    
+    def get_infrared_remotes(self) -> List[Dict]:
+        """
+        Get list of infrared remote devices
+        
+        Returns:
+            List of infrared remote device information
+        """
+        try:
+            result = self._make_request('/devices')
+            if result and 'infraredRemoteList' in result:
+                return result['infraredRemoteList']
+            return []
+        except Exception as e:
+            raise Exception(f"Failed to get infrared remotes: {str(e)}")
+    
+    def get_infrared_remote_status(self, remote_id: str) -> Optional[Dict]:
+        """
+        Get status of a specific infrared remote device
+        
+        Args:
+            remote_id: Infrared remote device ID
+            
+        Returns:
+            Infrared remote device status data or None if error
+        """
+        try:
+            result = self._make_request(f'/devices/{remote_id}/status')
+            return result
+        except Exception as e:
+            raise Exception(f"Failed to get infrared remote status for {remote_id}: {str(e)}")
+    
+    def send_infrared_command(self, remote_id: str, command: str, parameter: str = "default") -> bool:
+        """
+        Send infrared command to a remote device
+        
+        Args:
+            remote_id: Infrared remote device ID
+            command: Command to send
+            parameter: Command parameter
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            data = {"command": command, "parameter": parameter, "commandType": "command"}
+            self._make_request(f'/devices/{remote_id}/commands', method='POST', data=data)
+            return True
+        except Exception as e:
+            raise Exception(f"Failed to send infrared command to {remote_id}: {str(e)}")
