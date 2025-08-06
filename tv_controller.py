@@ -18,8 +18,14 @@ def display_tv_controls(device_data, api):
     """Display TV control interface"""
     device_name = device_data.get('deviceName', 'Unknown TV')
     device_id = device_data.get('deviceId', 'N/A')
+    device_type = device_data.get('deviceType', 'Unknown Type')
+    remote_type = device_data.get('remoteType', '')
     
+    # デバイス情報を表示
     st.subheader(f"📺 {device_name}")
+    st.caption(f"**ID**: {device_id} | **Type**: {device_type}")
+    if remote_type:
+        st.caption(f"**Remote Type**: {remote_type}")
     
     # Power control
     col1, col2 = st.columns(2)
@@ -112,8 +118,14 @@ def display_ac_controls(device_data, api):
     """Display AC control interface"""
     device_name = device_data.get('deviceName', 'Unknown AC')
     device_id = device_data.get('deviceId', 'N/A')
+    device_type = device_data.get('deviceType', 'Unknown Type')
+    remote_type = device_data.get('remoteType', '')
     
+    # デバイス情報を表示
     st.subheader(f"❄️ {device_name}")
+    st.caption(f"**ID**: {device_id} | **Type**: {device_type}")
+    if remote_type:
+        st.caption(f"**Remote Type**: {remote_type}")
     
     # Power control
     col1, col2 = st.columns(2)
@@ -157,8 +169,14 @@ def display_light_controls(device_data, api):
     """Display light control interface"""
     device_name = device_data.get('deviceName', 'Unknown Light')
     device_id = device_data.get('deviceId', 'N/A')
+    device_type = device_data.get('deviceType', 'Unknown Type')
+    remote_type = device_data.get('remoteType', '')
     
+    # デバイス情報を表示
     st.subheader(f"💡 {device_name}")
+    st.caption(f"**ID**: {device_id} | **Type**: {device_type}")
+    if remote_type:
+        st.caption(f"**Remote Type**: {remote_type}")
     
     col1, col2, col3 = st.columns(3)
     
@@ -288,6 +306,7 @@ def main():
                 device_id = device.get('deviceId', 'N/A')
                 
                 st.write(f"**{device_name}** ({device_type})")
+                st.caption(f"**ID**: {device_id}")
                 col1, col2 = st.columns(2)
                 
                 with col1:
