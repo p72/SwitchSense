@@ -53,7 +53,7 @@ def display_tv_controls(device_data, api):
         if st.button("🔊 Volume Up", key=f"volup_{device_id}"):
             try:
                 if device_data.get('remoteType'):
-                    api.send_infrared_command(device_id, "volumeUp")
+                    api.send_infrared_command(device_id, "volumeAdd")
                 else:
                     api.tv_volume_up(device_id)
                 st.success("Volume increased!")
@@ -64,7 +64,7 @@ def display_tv_controls(device_data, api):
         if st.button("🔉 Volume Down", key=f"voldown_{device_id}"):
             try:
                 if device_data.get('remoteType'):
-                    api.send_infrared_command(device_id, "volumeDown")
+                    api.send_infrared_command(device_id, "volumeSub")
                 else:
                     api.tv_volume_down(device_id)
                 st.success("Volume decreased!")
@@ -202,9 +202,94 @@ def display_light_controls(device_data, api):
     
     st.divider()
 
+def display_thermometer_controls(device_data, api):
+    """Display thermometer interface with temperature, humidity, and battery"""
+    device_name = device_data.get('deviceName', 'Unknown Thermometer')
+    device_id = device_data.get('deviceId', 'N/A')
+    device_type = device_data.get('deviceType', 'Unknown Type')
+    
+    # デバイス情報を表示
+    st.subheader(f"🌡️ {device_name}")
+    st.caption(f"**ID**: {device_id} | **Type**: {device_type}")
+    
+    # 温度単位の選択
+    temp_unit = st.radio(
+        "温度単位",
+        ["摂氏 (°C)", "華氏 (°F)"],
+        horizontal=True,
+        key=f"temp_unit_{device_id}"
+    )
+    
+    try:
+        # デバイス状態を取得
+        device_status = api.get_device_status(device_id)
+        
+        if device_status:
+            # 温度と湿度を取得
+            temperature = device_status.get('temperature', 0)
+            humidity = device_status.get('humidity', 0)
+            battery = device_status.get('battery', 0)
+            
+            # 温度単位を変換
+            if temp_unit == "華氏 (°F)":
+                temp_display = (temperature * 9/5) + 32
+                temp_unit_display = "°F"
+            else:
+                temp_display = temperature
+                temp_unit_display = "°C"
+            
+            # バッテリー状態の色を取得
+            if battery >= 80:
+                battery_color = "🟢"
+            elif battery >= 50:
+                battery_color = "🟡"
+            elif battery >= 20:
+                battery_color = "🟠"
+            else:
+                battery_color = "🔴"
+            
+            # データをカード形式で表示
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric(
+                    label="🌡️ 温度",
+                    value=f"{temp_display:.1f}{temp_unit_display}",
+                    delta=None
+                )
+            
+            with col2:
+                st.metric(
+                    label="💧 湿度",
+                    value=f"{humidity}%",
+                    delta=None
+                )
+            
+            with col3:
+                st.metric(
+                    label=f"{battery_color} バッテリー",
+                    value=f"{battery}%",
+                    delta=None
+                )
+            
+            # 更新時刻を表示
+            st.caption(f"📅 最終更新: {datetime.now().strftime('%H:%M:%S')}")
+            
+        else:
+            st.warning("❌ デバイス状態を取得できませんでした")
+            
+    except Exception as e:
+        st.error(f"デバイス状態の取得に失敗: {str(e)}")
+    
+    # 手動更新ボタン
+    if st.button("🔄 手動更新", key=f"thermo_refresh_{device_id}"):
+        st.rerun()
+    
+    st.divider()
+
 def main():
     st.title("📺 SwitchBot Device Controller")
-    st.markdown("Control your SwitchBot devices including TVs, ACs, and lights")
+    st.markdown("Control your SwitchBot devices including TVs, ACs, lights, and thermometers")
     
     # Get API credentials from environment variables
     token = os.getenv("SWITCHBOT_TOKEN")
@@ -249,6 +334,7 @@ def main():
         tv_devices = []
         ac_devices = []
         light_devices = []
+        thermometer_devices = []
         other_devices = []
         
         # Physical devices
@@ -260,6 +346,8 @@ def main():
                 ac_devices.append(device)
             elif 'Light' in device_type or 'Bulb' in device_type:
                 light_devices.append(device)
+            elif 'Meter' in device_type:  # Meter, MeterPlus, Outdoor Meter など
+                thermometer_devices.append(device)
             else:
                 other_devices.append(device)
         
@@ -278,6 +366,12 @@ def main():
                     other_devices.append(remote)
         except Exception as e:
             st.warning(f"仮想IRリモコンの取得に失敗しました: {str(e)}")
+        
+        # Display Thermometer devices
+        if thermometer_devices:
+            st.header("🌡️ Thermometer Devices")
+            for device in thermometer_devices:
+                display_thermometer_controls(device, api)
         
         # Display TV devices
         if tv_devices:
@@ -329,6 +423,7 @@ def main():
         
         # Display device summary
         st.sidebar.header("📊 Device Summary")
+        st.sidebar.write(f"🌡️ Thermometers: {len(thermometer_devices)}")
         st.sidebar.write(f"📺 TVs: {len(tv_devices)}")
         st.sidebar.write(f"❄️ ACs: {len(ac_devices)}")
         st.sidebar.write(f"💡 Lights: {len(light_devices)}")
