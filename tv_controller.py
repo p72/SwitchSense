@@ -47,7 +47,7 @@ def display_tv_controls(device_data, api):
     
     # Volume controls
     st.write("**Volume Controls**")
-    vol_col1, vol_col2, vol_col3 = st.columns(3)
+    vol_col1, vol_col2 = st.columns(2)
     
     with vol_col1:
         if st.button("🔊 Volume Up", key=f"volup_{device_id}"):
@@ -70,18 +70,6 @@ def display_tv_controls(device_data, api):
                 st.success("Volume decreased!")
             except Exception as e:
                 st.error(f"Failed to decrease volume: {str(e)}")
-    
-    with vol_col3:
-        volume = st.slider("Set Volume", 0, 100, 50, key=f"volume_{device_id}")
-        if st.button("Set Volume", key=f"setvol_{device_id}"):
-            try:
-                if device_data.get('remoteType'):
-                    api.send_infrared_command(device_id, "setVolume", str(volume))
-                else:
-                    api.tv_set_volume(device_id, volume)
-                st.success(f"Volume set to {volume}!")
-            except Exception as e:
-                st.error(f"Failed to set volume: {str(e)}")
     
     # Channel controls
     st.write("**Channel Controls**")
