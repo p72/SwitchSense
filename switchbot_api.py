@@ -184,7 +184,7 @@ class SwitchBotAPI:
             True if successful, False otherwise
         """
         try:
-            data = {"command": "volumeUp", "parameter": "default", "commandType": "command"}
+            data = {"command": "volumeAdd", "parameter": "default", "commandType": "command"}
             self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
             return True
         except Exception as e:
@@ -201,7 +201,7 @@ class SwitchBotAPI:
             True if successful, False otherwise
         """
         try:
-            data = {"command": "volumeDown", "parameter": "default", "commandType": "command"}
+            data = {"command": "volumeSub", "parameter": "default", "commandType": "command"}
             self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
             return True
         except Exception as e:
@@ -218,7 +218,7 @@ class SwitchBotAPI:
             True if successful, False otherwise
         """
         try:
-            data = {"command": "channelUp", "parameter": "default", "commandType": "command"}
+            data = {"command": "channelAdd", "parameter": "default", "commandType": "command"}
             self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
             return True
         except Exception as e:
@@ -235,7 +235,7 @@ class SwitchBotAPI:
             True if successful, False otherwise
         """
         try:
-            data = {"command": "channelDown", "parameter": "default", "commandType": "command"}
+            data = {"command": "channelSub", "parameter": "default", "commandType": "command"}
             self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
             return True
         except Exception as e:
@@ -253,7 +253,7 @@ class SwitchBotAPI:
             True if successful, False otherwise
         """
         try:
-            data = {"command": "setChannel", "parameter": str(channel), "commandType": "command"}
+            data = {"command": "SetChannel", "parameter": str(channel), "commandType": "command"}
             self._make_request(f'/devices/{device_id}/commands', method='POST', data=data)
             return True
         except Exception as e:

@@ -95,10 +95,10 @@ def test_tv_controls(api, device_id, device_name):
     
     commands = [
         ("🔌 電源", "turnOn"),
-        ("🔊 音量アップ", "volumeUp"),
-        ("🔉 音量ダウン", "volumeDown"),
-        ("📺 チャンネルアップ", "channelUp"),
-        ("📺 チャンネルダウン", "channelDown"),
+        ("🔊 音量アップ", "volumeAdd"),
+        ("🔉 音量ダウン", "volumeSub"),
+        ("📺 チャンネルアップ", "channelAdd"),
+        ("📺 チャンネルダウン", "channelSub"),
     ]
     
     for i, (name, command) in enumerate(commands, 1):
