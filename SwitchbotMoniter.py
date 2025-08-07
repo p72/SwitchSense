@@ -234,15 +234,102 @@ def display_ac_card(device, api):
     </div>
     """, unsafe_allow_html=True)
     
+    # 仮想IRエアコンの場合は専用UIを表示
+    if is_virtual_ir:
+        display_virtual_ac_card(device, api)
+    else:
+        # 物理デバイスの場合は従来のUI
+        display_physical_ac_card(device, api)
+
+def display_virtual_ac_card(device, api):
+    """仮想IRエアコン専用カードを表示"""
+    device_name = device.get('deviceName', 'Unknown')
+    device_id = device.get('deviceId', 'N/A')
+    
+    # 設定UI（4つのカラム）
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown("**🌡️ 温度設定**")
+        st.markdown("16°C - 30°C")
+        temp = st.slider("温度", 16, 30, 26, key=f"ac_temp_{device_id}", label_visibility="collapsed")
+        st.markdown(f"**{temp}°C**")
+    
+    with col2:
+        st.markdown("**🔄 モード**")
+        st.markdown("運転モード選択")
+        mode = st.selectbox("モード", 
+            ["auto", "cool", "dry", "fan", "heat"], 
+            key=f"ac_mode_{device_id}", label_visibility="collapsed")
+        mode_display = {"auto": "🔄 自動", "cool": "❄️ 冷房", "dry": "💧 除湿", "fan": "🌪️ 送風", "heat": "🔥 暖房"}
+        st.markdown(f"**{mode_display.get(mode, mode)}**")
+    
+    with col3:
+        st.markdown("**🌪️ ファン**")
+        st.markdown("風量設定")
+        fan = st.selectbox("ファン", 
+            ["auto", "low", "medium", "high"], 
+            key=f"ac_fan_{device_id}", label_visibility="collapsed")
+        fan_display = {"auto": "🔄 自動", "low": "💨 弱風", "medium": "🌪️ 中風", "high": "💨 強風"}
+        st.markdown(f"**{fan_display.get(fan, fan)}**")
+    
+    with col4:
+        st.markdown("**🔌 電源**")
+        st.markdown("電源状態")
+        power = st.selectbox("電源", ["on", "off"], key=f"ac_power_{device_id}", label_visibility="collapsed")
+        power_display = {"on": "🔌 ON", "off": "🔌 OFF"}
+        st.markdown(f"**{power_display.get(power, power)}**")
+    
+    # 統合実行ボタン
+    st.markdown("---")
+    col_center = st.columns([1, 2, 1])[1]
+    with col_center:
+        if st.button("🎯 設定実行", key=f"ac_set_all_{device_id}", use_container_width=True):
+            try:
+                # モードとファンのマッピング
+                mode_map = {"auto": 1, "cool": 2, "dry": 3, "fan": 4, "heat": 5}
+                fan_map = {"auto": 1, "low": 2, "medium": 3, "high": 4}
+                
+                mode_value = mode_map.get(mode, 1)
+                fan_value = fan_map.get(fan, 1)
+                
+                # setAllコマンドを構築
+                command = f"{temp},{mode_value},{fan_value},{power}"
+                api.send_infrared_command(device_id, "setAll", command)
+                
+                # 成功メッセージ
+                mode_name = {"auto": "自動", "cool": "冷房", "dry": "除湿", "fan": "送風", "heat": "暖房"}
+                fan_name = {"auto": "自動", "low": "弱風", "medium": "中風", "high": "強風"}
+                power_name = {"on": "ON", "off": "OFF"}
+                
+                st.success(f"✅ 設定完了！温度:{temp}°C モード:{mode_name.get(mode, mode)} ファン:{fan_name.get(fan, fan)} 電源:{power_name.get(power, power)}")
+                
+                # 現在設定表示
+                with st.expander("📋 設定詳細", expanded=False):
+                    st.markdown(f"**setAll コマンド:** `{command}`")
+                    st.markdown(f"**温度:** {temp}°C")
+                    st.markdown(f"**モード:** {mode_name.get(mode, mode)} (値: {mode_value})")
+                    st.markdown(f"**ファン:** {fan_name.get(fan, fan)} (値: {fan_value})")
+                    st.markdown(f"**電源:** {power_name.get(power, power)}")
+                    
+            except Exception as e:
+                st.error(f"❌ 設定エラー: {str(e)}")
+    
+    # 説明テキスト
+    st.markdown("---")
+    st.markdown("💡 **仮想IRエアコンは温度・モード・ファン・電源を一括で設定します**")
+    st.markdown("🎯 **「設定実行」ボタンで全ての設定を同時に送信します**")
+
+def display_physical_ac_card(device, api):
+    """物理エアコンデバイス用カードを表示"""
+    device_id = device.get('deviceId', 'N/A')
+    
     # 電源制御
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🔌 ON", key=f"ac_on_{device_id}"):
             try:
-                if remote_type:
-                    api.send_infrared_command(device_id, "setAll", "26,1,3,on")
-                else:
-                    api.ac_power(device_id)
+                api.ac_power(device_id)
                 st.success("エアコンON！")
             except Exception as e:
                 st.error(f"電源操作エラー: {str(e)}")
@@ -250,10 +337,7 @@ def display_ac_card(device, api):
     with col2:
         if st.button("🔌 OFF", key=f"ac_off_{device_id}"):
             try:
-                if remote_type:
-                    api.send_infrared_command(device_id, "setAll", "26,1,3,off")
-                else:
-                    api.ac_power(device_id)
+                api.ac_power(device_id)
                 st.success("エアコンOFF！")
             except Exception as e:
                 st.error(f"電源操作エラー: {str(e)}")
@@ -264,10 +348,7 @@ def display_ac_card(device, api):
         temp = st.slider("温度", 16, 30, 25, key=f"ac_temp_{device_id}")
         if st.button("🌡️ 設定", key=f"ac_set_temp_{device_id}"):
             try:
-                if remote_type:
-                    api.send_infrared_command(device_id, "setAll", f"{temp},1,3,on")
-                else:
-                    api.ac_set_temperature(device_id, temp)
+                api.ac_set_temperature(device_id, temp)
                 st.success(f"温度設定: {temp}°C！")
             except Exception as e:
                 st.error(f"温度設定エラー: {str(e)}")
@@ -276,12 +357,7 @@ def display_ac_card(device, api):
         mode = st.selectbox("モード", ["auto", "cool", "heat", "fan", "dry"], key=f"ac_mode_{device_id}")
         if st.button("🔄 設定", key=f"ac_set_mode_{device_id}"):
             try:
-                if remote_type:
-                    mode_map = {"auto": 1, "cool": 2, "dry": 3, "fan": 4, "heat": 5}
-                    mode_value = mode_map.get(mode, 1)
-                    api.send_infrared_command(device_id, "setAll", f"26,{mode_value},3,on")
-                else:
-                    api.ac_set_mode(device_id, mode)
+                api.ac_set_mode(device_id, mode)
                 st.success(f"モード設定: {mode}！")
             except Exception as e:
                 st.error(f"モード設定エラー: {str(e)}")
