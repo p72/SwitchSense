@@ -2,6 +2,12 @@
 
 SwitchBotの温度計デバイスをモニタリングし、リモコン操作もできるStreamlitアプリやで〜！✨
 
+## 🛠️ 開発経緯
+
+**最初に Replitでプロトタイプを作成、その後、Cursorで編集　Claude Sonnet 4で作成**
+
+このプロジェクトは、Replitでプロトタイプを作成し、その後Cursorで本格的な開発を行いました。Claude Sonnet 4を使用して、SwitchBot APIとの連携や美しいUIの実装を行っています。
+
 ## 📋 機能
 
 ### 🌡️ 温度監視機能
@@ -54,10 +60,10 @@ SWITCHBOT_SECRET=あなたの実際のシークレット
 
 ## 🎮 アプリの起動
 
-### 📺 統合アプリ（メイン）
+### 🏠 統合ダッシュボード（メイン）
 
 ```bash
-streamlit run tv_controller.py --server.port 8502
+streamlit run SwitchbotMoniter.py --server.port 8502
 ```
 
 **URL**: `http://localhost:8502`
@@ -66,7 +72,7 @@ streamlit run tv_controller.py --server.port 8502
 
 ```
 SwitchSense/
-├── tv_controller.py        # 📺 統合アプリケーション（メイン）
+├── SwitchbotMoniter.py     # 🏠 統合ダッシュボード（メイン）
 ├── switchbot_api.py        # 🔌 SwitchBot APIクライアント
 ├── test_ir_control.py      # 🎮 IRリモコン操作テスト
 ├── .env                    # ⚙️ 環境変数設定
@@ -127,46 +133,13 @@ SwitchSense/
    - デバイスタイプが`Hub Mini`か確認
    - API認証情報が正しいか確認
 
-## 🎮 使用方法
 
-### 🌡️ 温度監視
-1. 統合アプリ（tv_controller.py）を起動
-2. **🌡️ Thermometer Devices**セクションを確認
-3. 温度単位（摂氏/華氏）を選択
-4. リアルタイムで温度・湿度・バッテリーを監視
-5. 手動更新ボタンでデータを再取得
-
-### 📺 リモコン操作
-1. 統合アプリを起動
-2. デバイスカテゴリ（テレビ・エアコン・照明）を選択
-3. 各デバイスの操作ボタンをクリック
-4. 電源、音量、温度設定などの操作を実行
-
-### 🔧 Hub Mini表示
-1. 統合アプリを起動
-2. **🔧 Hub Devices**セクションを確認
-3. Hub Miniの存在と情報を確認
-4. 操作ボタンは表示されません（操作対象外）
-
-### 📱 統合管理
-1. **tv_controller.py**を起動
-2. 温度計デバイスが自動的に分類・表示される
-3. 温度・湿度・バッテリーをリアルタイム監視
-4. リモコン操作も同じ画面で実行
-5. サイドバーでデバイス数の確認
-
-## 🔧 開発・テスト
 
 ### 🎮 IRリモコン操作テスト
 
 ```bash
 python test_ir_control.py
 ```
-
-### 📖 技術仕様書
-
-- **英語版**: `replit.md`
-- **日本語版**: `replit_ja.md`
 
 ## 📝 ライセンス
 
