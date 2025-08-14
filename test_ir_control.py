@@ -127,39 +127,89 @@ def test_ac_controls(api, device_id, device_name):
     print("❄️ エアコンリモコン操作テスト")
     print("=" * 30)
     
-    commands = [
-        ("🔌 電源", "turnOn"),
-        ("❄️ 冷房", "setAll"),
-        ("🔥 暖房", "setAll"),
-        ("🌪️ 送風", "setAll"),
-        ("💧 除湿", "setAll"),
-    ]
-    
-    for i, (name, command) in enumerate(commands, 1):
-        print(f"{i}. {name}")
-    
+    print("🌡️ 温度設定 (16°C - 30°C)")
     try:
-        choice = int(input("\n実行するコマンドを選択してください (1-{}): ".format(len(commands))))
-        if 1 <= choice <= len(commands):
-            command_name, command = commands[choice - 1]
-            print(f"\n🎮 {command_name}を実行中...")
-            
-            try:
-                if command == "setAll":
-                    # エアコンのモード設定
-                    mode = input("モードを入力してください (cool/heat/fan/dry): ")
-                    api.send_infrared_command(device_id, command, f"25,25,{mode}")
-                else:
-                    api.send_infrared_command(device_id, command)
-                print(f"✅ {command_name}が正常に送信されました！")
-            except Exception as e:
-                print(f"❌ {command_name}の送信に失敗しました: {str(e)}")
-        else:
-            print("❌ 無効な選択です")
+        temp = int(input("温度を入力してください (16-30): "))
+        if temp < 16 or temp > 30:
+            print("❌ 温度は16-30の範囲で入力してください")
+            return
     except ValueError:
         print("❌ 数字を入力してください")
-    except KeyboardInterrupt:
-        print("\n👋 操作をキャンセルしました")
+        return
+    
+    print("\n🔄 モード選択")
+    print("1. 🔄 自動 (auto)")
+    print("2. ❄️ 冷房 (cool)")
+    print("3. 💧 除湿 (dry)")
+    print("4. 🌪️ 送風 (fan)")
+    print("5. 🔥 暖房 (heat)")
+    
+    try:
+        mode_choice = int(input("モードを選択してください (1-5): "))
+        mode_map = {1: "auto", 2: "cool", 3: "dry", 4: "fan", 5: "heat"}
+        if mode_choice not in mode_map:
+            print("❌ 1-5の数字を入力してください")
+            return
+        mode = mode_map[mode_choice]
+    except ValueError:
+        print("❌ 数字を入力してください")
+        return
+    
+    print("\n🌪️ ファン設定")
+    print("1. 🔄 自動 (auto)")
+    print("2. 💨 弱風 (low)")
+    print("3. 🌪️ 中風 (medium)")
+    print("4. 💨 強風 (high)")
+    
+    try:
+        fan_choice = int(input("ファンを選択してください (1-4): "))
+        fan_map = {1: "auto", 2: "low", 3: "medium", 4: "high"}
+        if fan_choice not in fan_map:
+            print("❌ 1-4の数字を入力してください")
+            return
+        fan = fan_map[fan_choice]
+    except ValueError:
+        print("❌ 数字を入力してください")
+        return
+    
+    print("\n🔌 電源設定")
+    print("1. 🔌 ON (on)")
+    print("2. 🔌 OFF (off)")
+    
+    try:
+        power_choice = int(input("電源を選択してください (1-2): "))
+        power_map = {1: "on", 2: "off"}
+        if power_choice not in power_map:
+            print("❌ 1-2の数字を入力してください")
+            return
+        power = power_map[power_choice]
+    except ValueError:
+        print("❌ 数字を入力してください")
+        return
+    
+    # モードとファンのマッピング（SwitchbotMoniter.pyと同じ）
+    mode_value_map = {"auto": 1, "cool": 2, "dry": 3, "fan": 4, "heat": 5}
+    fan_value_map = {"auto": 1, "low": 2, "medium": 3, "high": 4}
+    
+    mode_value = mode_value_map.get(mode, 1)
+    fan_value = fan_value_map.get(fan, 1)
+    
+    # setAllコマンドを構築
+    command = f"{temp},{mode_value},{fan_value},{power}"
+    
+    print(f"\n🎮 設定を実行中...")
+    print(f"📋 設定内容:")
+    print(f"   温度: {temp}°C")
+    print(f"   モード: {mode} (値: {mode_value})")
+    print(f"   ファン: {fan} (値: {fan_value})")
+    print(f"   電源: {power}")
+    print(f"   setAllコマンド: {command}")
+    
+    try:
+        api.send_infrared_command(device_id, "setAll", command)
+        print(f"✅ エアコン設定が正常に送信されました！")
+    except Exception as e:
+        print(f"❌ エアコン設定の送信に失敗しました: {str(e)}")
 
 def test_light_controls(api, device_id, device_name):
     """照明リモコンの操作テスト"""
