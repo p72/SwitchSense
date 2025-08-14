@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- ヘッダー -->
+  <rect x="20" y="20" width="760" height="60" fill="#2ecc71" rx="10"/>
+  <text x="40" y="55" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white">❄️ リビングエアコン (仮想IR)</text>
+  <text x="40" y="75" font-family="Arial, sans-serif" font-size="12" fill="white">ID: 1234567890ABCDEF</text>
+  
+  <!-- 設定カード -->
+  <rect x="20" y="100" width="760" height="400" fill="white" stroke="#e0e0e0" stroke-width="2" rx="10"/>
+  
+  <!-- 温度設定 -->
+  <rect x="40" y="130" width="160" height="120" fill="#e8f5e8" rx="8"/>
+  <text x="50" y="155" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2ecc71">🌡️ 温度設定</text>
+  <text x="50" y="175" font-family="Arial, sans-serif" font-size="14" fill="#666">16°C - 30°C</text>
+  
+  <!-- 温度スライダー -->
+  <rect x="60" y="190" width="120" height="8" fill="#ddd" rx="4"/>
+  <rect x="60" y="190" width="60" height="8" fill="#2ecc71" rx="4"/>
+  <circle cx="120" cy="194" r="8" fill="#2ecc71"/>
+  <text x="50" y="220" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2ecc71">26°C</text>
+  
+  <!-- モード設定 -->
+  <rect x="220" y="130" width="160" height="120" fill="#e8f4fd" rx="8"/>
+  <text x="230" y="155" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#3498db">🔄 モード</text>
+  <text x="230" y="175" font-family="Arial, sans-serif" font-size="14" fill="#666">運転モード選択</text>
+  
+  <!-- モード選択ボックス -->
+  <rect x="240" y="190" width="120" height="30" fill="white" stroke="#ccc" stroke-width="1" rx="4"/>
+  <text x="250" y="210" font-family="Arial, sans-serif" font-size="14" fill="#333">❄️ 冷房</text>
+  <polygon points="340,200 350,190 350,210" fill="#666"/>
+  
+  <!-- ファン設定 -->
+  <rect x="400" y="130" width="160" height="120" fill="#fff3e0" rx="8"/>
+  <text x="410" y="155" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#f39c12">🌪️ ファン</text>
+  <text x="410" y="175" font-family="Arial, sans-serif" font-size="14" fill="#666">風量設定</text>
+  
+  <!-- ファン選択ボックス -->
+  <rect x="420" y="190" width="120" height="30" fill="white" stroke="#ccc" stroke-width="1" rx="4"/>
+  <text x="430" y="210" font-family="Arial, sans-serif" font-size="14" fill="#333">🌪️ 中風</text>
+  <polygon points="520,200 530,190 530,210" fill="#666"/>
+  
+  <!-- 電源設定 -->
+  <rect x="580" y="130" width="160" height="120" fill="#ffe8e8" rx="8"/>
+  <text x="590" y="155" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#e74c3c">🔌 電源</text>
+  <text x="590" y="175" font-family="Arial, sans-serif" font-size="14" fill="#666">電源状態</text>
+  
+  <!-- 電源選択ボックス -->
+  <rect x="600" y="190" width="120" height="30" fill="white" stroke="#ccc" stroke-width="1" rx="4"/>
+  <text x="610" y="210" font-family="Arial, sans-serif" font-size="14" fill="#333">🔌 ON</text>
+  <polygon points="700,200 710,190 710,210" fill="#666"/>
+  
+  <!-- 設定実行ボタン -->
+  <rect x="300" y="280" width="200" height="50" fill="#2ecc71" rx="25"/>
+  <text x="400" y="310" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">🎯 設定実行</text>
+  
+  <!-- 現在設定表示 -->
+  <rect x="40" y="350" width="720" height="80" fill="#f8f9fa" rx="8"/>
+  <text x="50" y="375" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#333">📋 現在の設定</text>
+  <text x="50" y="400" font-family="Arial, sans-serif" font-size="14" fill="#666">温度: 26°C | モード: 冷房 | ファン: 中風 | 電源: ON</text>
+  <text x="50" y="420" font-family="Arial, sans-serif" font-size="12" fill="#999">setAll コマンド: "26,2,3,on"</text>
+  
+  <!-- 成功メッセージ -->
+  <rect x="200" y="450" width="400" height="40" fill="#d4edda" stroke="#c3e6cb" stroke-width="1" rx="8"/>
+  <text x="220" y="475" font-family="Arial, sans-serif" font-size="14" fill="#155724">✅ 設定完了！温度:26°C モード:冷房 ファン:中風 電源:ON</text>
+  
+  <!-- モード選択肢（ドロップダウン） -->
+  <rect x="230" y="220" width="120" height="120" fill="white" stroke="#ccc" stroke-width="1" rx="4" opacity="0.9"/>
+  <text x="240" y="240" font-family="Arial, sans-serif" font-size="12" fill="#333">🔄 自動</text>
+  <text x="240" y="255" font-family="Arial, sans-serif" font-size="12" fill="#333">❄️ 冷房</text>
+  <text x="240" y="270" font-family="Arial, sans-serif" font-size="12" fill="#333">💧 除湿</text>
+  <text x="240" y="285" font-family="Arial, sans-serif" font-size="12" fill="#333">🌪️ 送風</text>
+  <text x="240" y="300" font-family="Arial, sans-serif" font-size="12" fill="#333">🔥 暖房</text>
+  
+  <!-- ファン選択肢（ドロップダウン） -->
+  <rect x="410" y="220" width="120" height="100" fill="white" stroke="#ccc" stroke-width="1" rx="4" opacity="0.9"/>
+  <text x="420" y="240" font-family="Arial, sans-serif" font-size="12" fill="#333">🔄 自動</text>
+  <text x="420" y="255" font-family="Arial, sans-serif" font-size="12" fill="#333">💨 弱風</text>
+  <text x="420" y="270" font-family="Arial, sans-serif" font-size="12" fill="#333">🌪️ 中風</text>
+  <text x="420" y="285" font-family="Arial, sans-serif" font-size="12" fill="#333">💨 強風</text>
+  
+  <!-- 電源選択肢（ドロップダウン） -->
+  <rect x="590" y="220" width="120" height="60" fill="white" stroke="#ccc" stroke-width="1" rx="4" opacity="0.9"/>
+  <text x="600" y="240" font-family="Arial, sans-serif" font-size="12" fill="#333">🔌 ON</text>
+  <text x="600" y="255" font-family="Arial, sans-serif" font-size="12" fill="#333">🔌 OFF</text>
+  
+  <!-- 説明テキスト -->
+  <text x="40" y="520" font-family="Arial, sans-serif" font-size="12" fill="#666">💡 仮想IRエアコンは温度・モード・ファン・電源を一括で設定します</text>
+  <text x="40" y="540" font-family="Arial, sans-serif" font-size="12" fill="#666">🎯 「設定実行」ボタンで全ての設定を同時に送信します</text>
+</svg>
